@@ -3696,6 +3696,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: {fileID: 1610360149}
+  combinedCrepe: {fileID: 947164076}
 --- !u!224 &870822094
 RectTransform:
   m_ObjectHideFlags: 0

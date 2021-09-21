@@ -40,17 +40,8 @@ namespace MuneoCrepe
         {
             if (!choppingBoard.IsReadyToCombine) return;
 
-            var result = nowMuneo.IsFavoriteCrepe(ingredients);
-            
-            if (result)
-            {
-                await nowMuneo.BeHappy();
-            }
-            else
-            {
-                await nowMuneo.StillSad();
-            }
-            
+            await nowMuneo.GiveCrepe(ingredients);
+
             // 도마 초기화
             choppingBoard.Initialize();
             // 문어 초기화

@@ -9,6 +9,7 @@ namespace MuneoCrepe
     public class Muneo : MonoBehaviour
     {
         [SerializeField] private Text text;
+        [SerializeField] private CombinedCrepeController combinedCrepe;
         
         private Dictionary<MuneoType, int> _characteristics;
 
@@ -25,7 +26,22 @@ namespace MuneoCrepe
             ShowAsString();
         }
 
-        public bool IsFavoriteCrepe(Dictionary<IngredientType, int> ingredients)
+        public async UniTask GiveCrepe(Dictionary<IngredientType, int> ingredients)
+        {
+            combinedCrepe.SetCrepe(ingredients);
+            var result = IsFavoriteCrepe(ingredients);
+            
+            if (result)
+            {
+                await BeHappy();
+            }
+            else
+            {
+                await StillSad();
+            }
+        }
+
+        private bool IsFavoriteCrepe(Dictionary<IngredientType, int> ingredients)
         {
             if (_characteristics[MuneoType.Color] != ingredients[IngredientType.Cone]) return false;
             if (_characteristics[MuneoType.Hat] != ingredients[IngredientType.Fruit]) return false;
@@ -35,14 +51,14 @@ namespace MuneoCrepe
             return true;
         }
 
-        public async UniTask BeHappy()
+        private async UniTask BeHappy()
         {
             text.text = "기쁜 문어가 되었어요~";
 
             await UniTask.Delay(1000);
         }
 
-        public async UniTask StillSad()
+        private async UniTask StillSad()
         {
             text.text = "문어는 여전히 슬퍼요 ㅠㅠ";
 
