@@ -3899,9 +3899,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ingredientType: 3
   ingredientsButtons:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 1070524123}
+  - {fileID: 296080306}
+  - {fileID: 1123776624}
 --- !u!114 &1033478769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4600,9 +4600,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ingredientType: 0
   ingredientsButtons:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 224770147}
+  - {fileID: 1055523608}
+  - {fileID: 96347564}
 --- !u!114 &1129238191
 MonoBehaviour:
   m_ObjectHideFlags: 0
