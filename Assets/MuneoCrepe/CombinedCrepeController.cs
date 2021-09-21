@@ -1,4 +1,7 @@
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
+using MuneoCrepe.Extensions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,8 +21,24 @@ namespace MuneoCrepe
         [SerializeField] private List<Sprite> syrupSpriteList;
 
         #endregion
-        
-        public void SetCrepe(Dictionary<IngredientType, int> ingredients)
+
+        private RectTransform _rectTransform;
+        private RectTransform RectTransform
+        {
+            get
+            {
+                if (_rectTransform == null)
+                {
+                    _rectTransform = GetComponent<RectTransform>();
+                }
+
+                return _rectTransform;
+            }
+        }
+
+        private bool _giveFinished;
+
+        private void SetCrepe(Dictionary<IngredientType, int> ingredients)
         {
             // 콘 스프라이트 조절
             if (ingredients[IngredientType.Cone] != 0)
@@ -56,6 +75,30 @@ namespace MuneoCrepe
             {
                 toppingObjects[ingredients[IngredientType.Topping] - 1].SetActive(true);
             }
+            
+            transform.SetAsLastSibling();
+            RectTransform.localScale = Vector3.one;
+            RectTransform.anchoredPosition = new Vector2(0, -660);
+            _giveFinished = false;
+            
+            gameObject.SetActive(true);
+        }
+
+        public async UniTask GiveToMuneo(Dictionary<IngredientType, int> ingredients)
+        {
+            SetCrepe(ingredients);
+            await UniTask.WaitUntil(() => _giveFinished);
+        }
+
+        public void MoveToBackLayer()
+        {
+            var index = transform.GetSiblingIndex();
+            transform.SetSiblingIndex(index - 1);
+        }
+
+        public void GiveFinish()
+        {
+            _giveFinished = true;
         }
     }
 }

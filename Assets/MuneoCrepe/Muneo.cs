@@ -26,9 +26,8 @@ namespace MuneoCrepe
             ShowAsString();
         }
 
-        public async UniTask GiveCrepe(Dictionary<IngredientType, int> ingredients)
+        public async UniTask<bool> Reaction(Dictionary<IngredientType, int> ingredients)
         {
-            combinedCrepe.SetCrepe(ingredients);
             var result = IsFavoriteCrepe(ingredients);
             
             if (result)
@@ -39,6 +38,8 @@ namespace MuneoCrepe
             {
                 await StillSad();
             }
+
+            return result;
         }
 
         private bool IsFavoriteCrepe(Dictionary<IngredientType, int> ingredients)
@@ -54,6 +55,8 @@ namespace MuneoCrepe
         private async UniTask BeHappy()
         {
             text.text = "기쁜 문어가 되었어요~";
+            // 뒤집히고
+            // 슬슬 올라감
 
             await UniTask.Delay(1000);
         }

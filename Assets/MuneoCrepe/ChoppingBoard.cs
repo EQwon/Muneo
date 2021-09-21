@@ -9,7 +9,7 @@ namespace MuneoCrepe
     public class ChoppingBoard : MonoBehaviour
     {
         #region Inspectors
-
+        
         [SerializeField] private Image coneImage;
         [SerializeField] private Image fruitImage;
         [SerializeField] private Image syrupImage;
@@ -38,7 +38,6 @@ namespace MuneoCrepe
                 {IngredientType.Syrup, 0},
                 {IngredientType.Topping, 0},
             };
-            IsReadyToCombine = false;
 
             if (_button == null)
             {
@@ -48,14 +47,15 @@ namespace MuneoCrepe
             _button.onClick.AddListener(() =>
             {
                 UIManager.Instance.CrepeController.OnClickChoppingBoard(_ingredients).Forget();
-                _animator.SetBool("Spread", false);
             });
 
             if (_animator == null)
             {
                 _animator = GetComponent<Animator>();
             }
+
             _animator.SetBool("Spread", true);
+            IsReadyToCombine = false;
 
             ShowAsUI();
         }
@@ -125,6 +125,11 @@ namespace MuneoCrepe
         public void ReadyToCombine()
         {
             IsReadyToCombine = true;
+        }
+
+        public async UniTask RollUpCrepe()
+        {
+            _animator.SetBool("Spread", false);
         }
     }
 }

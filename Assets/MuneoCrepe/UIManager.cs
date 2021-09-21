@@ -23,8 +23,11 @@ namespace MuneoCrepe
         public static UIManager Instance => _instance;
 
         public CrepeController CrepeController => crepeController;
+        public int TodayGoal => _goalCounts[_day];
 
         private const int MAXIMUM_DAY = 4;
+        private readonly List<int> _goalCounts = new List<int> {0, 6, 8, 10, 10};
+        
         private int _day;
 
         private void Awake()
@@ -46,7 +49,7 @@ namespace MuneoCrepe
             tvController.SetInactive(true).Forget();
             crepeController.SetActive(true, true);
 
-            _day = 1;
+            _day = 0;
         }
 
         public void StartNextDay()

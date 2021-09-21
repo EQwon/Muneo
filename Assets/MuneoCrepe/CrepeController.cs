@@ -10,10 +10,13 @@ namespace MuneoCrepe
 
         [SerializeField] private List<IngredientGroup> ingredientGroups;
         [SerializeField] private ChoppingBoard choppingBoard;
+        [SerializeField] private CombinedCrepeController combinedCrepe;
         [SerializeField] private Muneo nowMuneo;
 
         #endregion
 
+        private int _nowCount;
+        
         public void SetActive(bool value, bool auto = false)
         {
             
@@ -21,11 +24,13 @@ namespace MuneoCrepe
         
         public void GameStart(int day)
         {
+            _nowCount = 0;
             for (var i = 0; i < ingredientGroups.Count; i++)
             {
                 ingredientGroups[i].Initialize(i < day);
             }
             choppingBoard.Initialize();
+            combinedCrepe.gameObject.SetActive(false);
             GenerateRandomMuneo();
         }
 
@@ -40,7 +45,19 @@ namespace MuneoCrepe
         {
             if (!choppingBoard.IsReadyToCombine) return;
 
-            await nowMuneo.GiveCrepe(ingredients);
+            _nowCount += 1;
+            
+            // 크레페가 말리는 연출
+            await choppingBoard.RollUpCrepe();
+            await combinedCrepe.GiveToMuneo(ingredients);
+            var result = await nowMuneo.Reaction(ingredients);
+
+            if (_nowCount >= UIManager.Instance.TodayGoal)
+            {
+                // await CloseShop();
+                UIManager.Instance.StartNextDay();
+                return;
+            }
 
             // 도마 초기화
             choppingBoard.Initialize();
