@@ -3,7 +3,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Muneo
+namespace MuneoCrepe
 {
     public class ChoppingBoard : MonoBehaviour
     {

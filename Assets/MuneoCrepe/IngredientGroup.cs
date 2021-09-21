@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Muneo
+namespace MuneoCrepe
 {
     public class IngredientGroup : MonoBehaviour
     {

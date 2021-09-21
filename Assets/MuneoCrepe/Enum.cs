@@ -1,4 +1,4 @@
-namespace Muneo
+namespace MuneoCrepe
 {
     public enum IngredientType
     {
