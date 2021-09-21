@@ -52,6 +52,12 @@ namespace MuneoCrepe
             await combinedCrepe.GiveToMuneo(ingredients);
             var result = await nowMuneo.Reaction(ingredients);
 
+            if (result == false)
+            {
+                var isFail = UIManager.Instance.WrongCrepe();
+                if (isFail) return;
+            }
+            
             if (_nowCount >= UIManager.Instance.TodayGoal)
             {
                 // await CloseShop();

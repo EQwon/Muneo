@@ -26,8 +26,10 @@ namespace MuneoCrepe
         public int TodayGoal => _goalCounts[_day];
 
         private const int MAXIMUM_DAY = 4;
+        private const int MAXIMUM_LIFE = 5;
         private readonly List<int> _goalCounts = new List<int> {0, 6, 8, 10, 10};
-        
+
+        private int _life;
         private int _day;
 
         private void Awake()
@@ -50,12 +52,26 @@ namespace MuneoCrepe
             crepeController.SetActive(true, true);
 
             _day = 0;
+            _life = MAXIMUM_LIFE;
         }
 
         public void StartNextDay()
         {
             _day += 1;
             tvController.SetDay(_day);
+        }
+
+        public bool WrongCrepe()
+        {
+            _life -= 1;
+
+            if (_life == 0)
+            {
+                // Fail();
+                return false;
+            }
+
+            return true;
         }
     }
 }
