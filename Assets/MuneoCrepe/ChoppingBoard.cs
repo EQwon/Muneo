@@ -43,12 +43,19 @@ namespace MuneoCrepe
                 _button = GetComponent<Button>();
             }
             _button.onClick.RemoveAllListeners();
-            _button.onClick.AddListener(() => UIManager.Instance.CrepeController.OnClickChoppingBoard(_ingredients).Forget());
+            _button.onClick.AddListener(() =>
+            {
+                UIManager.Instance.CrepeController.OnClickChoppingBoard(_ingredients).Forget();
+                _animator.SetBool("Spread", false);
+            });
 
             if (_animator == null)
             {
                 _animator = GetComponent<Animator>();
             }
+            _animator.SetBool("Spread", true);
+
+            ShowAsUI();
         }
 
         public void SetIngredients(IngredientType type, int index)
@@ -61,6 +68,8 @@ namespace MuneoCrepe
 
             Debug.Log($"{type} 타입의 {index}번 째 재료를 선택했습니다.");
             _ingredients[type] = index;
+            
+            ShowAsUI();
         }
         
         private void ShowAsUI()

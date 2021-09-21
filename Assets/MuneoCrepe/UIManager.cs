@@ -46,7 +46,7 @@ namespace MuneoCrepe
             tvController.SetInactive(true).Forget();
             crepeController.SetActive(true, true);
 
-            _day = 0;
+            _day = 1;
         }
 
         public void StartNextDay()
