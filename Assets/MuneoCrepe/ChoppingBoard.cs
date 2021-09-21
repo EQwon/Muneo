@@ -8,10 +8,24 @@ namespace MuneoCrepe
 {
     public class ChoppingBoard : MonoBehaviour
     {
-        [SerializeField] private Text text;
+        #region Inspectors
 
+        [SerializeField] private Image fruitImage;
+        [SerializeField] private Image syrupImage;
+        [SerializeField] private Image toppingImage;
+
+        [Header("Resources")]
+        [SerializeField] private List<Sprite> fruitSpriteList;
+        [SerializeField] private List<Sprite> syrupSpriteList;
+        [SerializeField] private List<Sprite> toppingSpriteList;
+
+        #endregion
+        
         private Dictionary<IngredientType, int> _ingredients;
         private Button _button;
+        private Animator _animator;
+
+        public bool IsReadyToCombine { get; private set; }
 
         public void Initialize()
         {
@@ -22,7 +36,7 @@ namespace MuneoCrepe
                 {IngredientType.Syrup, 0},
                 {IngredientType.Topping, 0},
             };
-            ShowAsString();
+            IsReadyToCombine = false;
 
             if (_button == null)
             {
@@ -30,6 +44,11 @@ namespace MuneoCrepe
             }
             _button.onClick.RemoveAllListeners();
             _button.onClick.AddListener(() => UIManager.Instance.CrepeController.OnClickChoppingBoard(_ingredients).Forget());
+
+            if (_animator == null)
+            {
+                _animator = GetComponent<Animator>();
+            }
         }
 
         public void SetIngredients(IngredientType type, int index)
@@ -42,36 +61,50 @@ namespace MuneoCrepe
 
             Debug.Log($"{type} 타입의 {index}번 째 재료를 선택했습니다.");
             _ingredients[type] = index;
-
-            ShowAsString();
         }
-
-        // TODO : 이것을 나중에 UI로 바꿔야 함
-        private void ShowAsString()
+        
+        private void ShowAsUI()
         {
-            var sb = new StringBuilder();
-            if (_ingredients[IngredientType.Cone] != 0)
-            {
-                sb.Append($"Cone : {_ingredients[IngredientType.Cone]}");
-                sb.AppendLine();
-            }
+            UIManager.Instance.CrepeController.SetSelectedCone(_ingredients[IngredientType.Cone]);
+            
+            // 과일 스프라이트 조절
             if (_ingredients[IngredientType.Fruit] != 0)
             {
-                sb.Append($"Fruit : {_ingredients[IngredientType.Fruit]}");
-                sb.AppendLine();
+                fruitImage.enabled = true;
+                fruitImage.sprite = fruitSpriteList[_ingredients[IngredientType.Fruit] - 1];
             }
+            else
+            {
+                fruitImage.enabled = false;
+            }
+            
+            // 시럽 스프라이트 조절
             if (_ingredients[IngredientType.Syrup] != 0)
             {
-                sb.Append($"Syrup : {_ingredients[IngredientType.Syrup]}");
-                sb.AppendLine();
+                syrupImage.enabled = true;
+                syrupImage.sprite = syrupSpriteList[_ingredients[IngredientType.Syrup] - 1];
             }
-            if (_ingredients[IngredientType.Topping] != 0)
+            else
             {
-                sb.Append($"Topping : {_ingredients[IngredientType.Topping]}");
-                sb.AppendLine();
+                syrupImage.enabled = false;
             }
 
-            text.text = sb.ToString();
+            // 토핑 스프라이트 조절
+            if (_ingredients[IngredientType.Topping] != 0)
+            {
+                toppingImage.enabled = true;
+                toppingImage.sprite = toppingSpriteList[_ingredients[IngredientType.Topping] - 1];
+            }
+            else
+            {
+                toppingImage.enabled = false;
+            }
+        }
+
+        /// <summary> Animator에서 Event로 사용 </summary>
+        public void ReadyToCombine()
+        {
+            IsReadyToCombine = true;
         }
     }
 }

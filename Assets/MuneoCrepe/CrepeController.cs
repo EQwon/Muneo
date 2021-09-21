@@ -29,13 +29,29 @@ namespace MuneoCrepe
             GenerateRandomMuneo();
         }
 
+        public void SetSelectedCone(int index)
+        {
+            if (index == 0)
+            {
+                // 아무것도 선택되지 않게 합니다.
+            }
+            else
+            {
+                
+            }
+        }
+
         public void OnClickIngredient(IngredientType type, int index)
         {
+            if (!choppingBoard.IsReadyToCombine) return;
+            
             choppingBoard.SetIngredients(type, index);
         }
 
         public async UniTask OnClickChoppingBoard(Dictionary<IngredientType, int> ingredients)
         {
+            if (!choppingBoard.IsReadyToCombine) return;
+
             var result = nowMuneo.IsFavoriteCrepe(ingredients);
             
             if (result)
