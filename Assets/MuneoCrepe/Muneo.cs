@@ -8,9 +8,6 @@ namespace MuneoCrepe
 {
     public class Muneo : MonoBehaviour
     {
-        [SerializeField] private Text text;
-        [SerializeField] private CombinedCrepeController combinedCrepe;
-        
         private Dictionary<MuneoType, int> _characteristics;
 
         public void Initialize(int colorIndex = 0, int hatIndex = 0, int dyeingIndex = 0, int eyeIndex = 0)
@@ -22,8 +19,6 @@ namespace MuneoCrepe
                 {MuneoType.Dyeing, dyeingIndex},
                 {MuneoType.Eye, eyeIndex},
             };
-
-            ShowAsString();
         }
 
         public async UniTask<bool> Reaction(Dictionary<IngredientType, int> ingredients)
@@ -54,7 +49,6 @@ namespace MuneoCrepe
 
         private async UniTask BeHappy()
         {
-            text.text = "기쁜 문어가 되었어요~";
             // 뒤집히고
             // 슬슬 올라감
 
@@ -63,13 +57,10 @@ namespace MuneoCrepe
 
         private async UniTask StillSad()
         {
-            text.text = "문어는 여전히 슬퍼요 ㅠㅠ";
-
             await UniTask.Delay(1000);
         }
 
-        // TODO : 이것을 나중에 UI로 바꿔야 함
-        private void ShowAsString()
+        private void ShowAsUI()
         {
             var sb = new StringBuilder();
             if (_characteristics[MuneoType.Color] != 0)
@@ -92,8 +83,6 @@ namespace MuneoCrepe
                 sb.Append($"Eye : {_characteristics[MuneoType.Eye]}");
                 sb.AppendLine();
             }
-
-            text.text = sb.ToString();
         }
     }
 }
