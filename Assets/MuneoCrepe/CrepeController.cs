@@ -29,18 +29,6 @@ namespace MuneoCrepe
             GenerateRandomMuneo();
         }
 
-        public void SetSelectedCone(int index)
-        {
-            if (index == 0)
-            {
-                // 아무것도 선택되지 않게 합니다.
-            }
-            else
-            {
-                
-            }
-        }
-
         public void OnClickIngredient(IngredientType type, int index)
         {
             if (!choppingBoard.IsReadyToCombine) return;

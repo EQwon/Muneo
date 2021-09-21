@@ -10,11 +10,13 @@ namespace MuneoCrepe
     {
         #region Inspectors
 
+        [SerializeField] private Image coneImage;
         [SerializeField] private Image fruitImage;
         [SerializeField] private Image syrupImage;
         [SerializeField] private Image toppingImage;
 
         [Header("Resources")]
+        [SerializeField] private List<Sprite> coneSpriteList;
         [SerializeField] private List<Sprite> fruitSpriteList;
         [SerializeField] private List<Sprite> syrupSpriteList;
         [SerializeField] private List<Sprite> toppingSpriteList;
@@ -74,7 +76,16 @@ namespace MuneoCrepe
         
         private void ShowAsUI()
         {
-            UIManager.Instance.CrepeController.SetSelectedCone(_ingredients[IngredientType.Cone]);
+            // 콘 스프라이트 조절
+            if (_ingredients[IngredientType.Cone] != 0)
+            {
+                coneImage.enabled = true;
+                coneImage.sprite = coneSpriteList[_ingredients[IngredientType.Cone] - 1];
+            }
+            else
+            {
+                coneImage.enabled = false;
+            }
             
             // 과일 스프라이트 조절
             if (_ingredients[IngredientType.Fruit] != 0)
