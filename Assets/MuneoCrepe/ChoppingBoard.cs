@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +11,7 @@ namespace MuneoCrepe
         [SerializeField] private Text text;
 
         private Dictionary<IngredientType, int> _ingredients;
+        private Button _button;
 
         public void Initialize()
         {
@@ -21,6 +23,13 @@ namespace MuneoCrepe
                 {IngredientType.Topping, 0},
             };
             ShowAsString();
+
+            if (_button == null)
+            {
+                _button = GetComponent<Button>();
+            }
+            _button.onClick.RemoveAllListeners();
+            _button.onClick.AddListener(() => UIManager.Instance.OnClickChoppingBoard(_ingredients).Forget());
         }
 
         public void SetIngredients(IngredientType type, int index)
