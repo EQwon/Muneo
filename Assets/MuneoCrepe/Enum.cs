@@ -4,4 +4,9 @@ namespace MuneoCrepe
     {
         Cone, Fruit, Syrup, Topping,
     }
+
+    public enum MuneoType
+    {
+        Color, Hat, Dyeing, Eye,
+    }
 }
