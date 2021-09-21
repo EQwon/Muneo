@@ -9,8 +9,12 @@ namespace MuneoCrepe
         [SerializeField] private IngredientType ingredientType;
         [SerializeField] private List<Button> ingredientsButtons;
 
+        public bool Unlock { get; private set; }
+
         public void Initialize(bool unlock)
         {
+            Unlock = unlock;
+            
             for (var i = 0; i < ingredientsButtons.Count; i++)
             {
                 ingredientsButtons[i].onClick.RemoveAllListeners();
@@ -18,7 +22,7 @@ namespace MuneoCrepe
                 {
                     var index = i + 1;
                     ingredientsButtons[i].onClick
-                        .AddListener(() => UIManager.Instance.OnClickIngredient(ingredientType, index));
+                        .AddListener(() => UIManager.Instance.CrepeController.OnClickIngredient(ingredientType, index));
                 }
 
                 ingredientsButtons[i].gameObject.SetActive(unlock);

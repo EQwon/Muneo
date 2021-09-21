@@ -29,7 +29,7 @@ namespace MuneoCrepe
                 _button = GetComponent<Button>();
             }
             _button.onClick.RemoveAllListeners();
-            _button.onClick.AddListener(() => UIManager.Instance.OnClickChoppingBoard(_ingredients).Forget());
+            _button.onClick.AddListener(() => UIManager.Instance.CrepeController.OnClickChoppingBoard(_ingredients).Forget());
         }
 
         public void SetIngredients(IngredientType type, int index)
