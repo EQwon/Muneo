@@ -24,8 +24,6 @@ namespace MuneoCrepe
 
         #endregion
 
-        private Button _button;
-        private Animator _animator;
         private RectTransform _rectTransform;
 
         public RectTransform RectTransform
@@ -40,7 +38,6 @@ namespace MuneoCrepe
                 return _rectTransform;
             }
         }
-        public bool IsReadyToCombine { get; private set; }
         public Dictionary<IngredientType, int> Ingredients { get; private set; }
 
         public void SetCrepeDough(int cone, int fruit, int syrup, int topping)
@@ -90,6 +87,7 @@ namespace MuneoCrepe
             {
                 fruitImage.enabled = true;
                 fruitImage.sprite = fruitSpriteList[Ingredients[IngredientType.Fruit] - 1];
+                fruitImage.SetNativeSize();
             }
             else
             {
@@ -112,6 +110,7 @@ namespace MuneoCrepe
             {
                 toppingImage.enabled = true;
                 toppingImage.sprite = toppingSpriteList[Ingredients[IngredientType.Topping] - 1];
+                toppingImage.SetNativeSize();
             }
             else
             {
