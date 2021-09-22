@@ -26,7 +26,7 @@ namespace MuneoCrepe
 
         private static string EnteredString(string str)
         {
-            var values = str.Split('\n');
+            var values = str.Split('\t');
 
             var sb = new StringBuilder();
             for (var i = 0; i < values.Length; i++)
