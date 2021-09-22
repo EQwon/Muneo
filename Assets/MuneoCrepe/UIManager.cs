@@ -16,6 +16,7 @@ namespace MuneoCrepe
         [SerializeField] private TitleController titleController;
         [SerializeField] private TVController tvController;
         [SerializeField] private CrepeController crepeController;
+        [SerializeField] private TopBarController topBarController;
 
         #endregion
 
@@ -27,7 +28,7 @@ namespace MuneoCrepe
 
         private const int MAXIMUM_DAY = 4;
         private const int MAXIMUM_LIFE = 5;
-        private readonly List<int> _goalCounts = new List<int> {0, 6, 8, 10, 10};
+        private readonly List<int> _goalCounts = new List<int> {0, 5, 6, 6, 6};
 
         private int _life;
         private int _day;
@@ -59,11 +60,14 @@ namespace MuneoCrepe
         {
             _day += 1;
             tvController.SetDay(_day);
+            topBarController.SetDay(_day);
+            topBarController.SetLife(_life);
         }
 
         public bool WrongCrepe()
         {
             _life -= 1;
+            topBarController.SetLife(_life);
 
             if (_life == 0)
             {

@@ -130,6 +130,7 @@ namespace MuneoCrepe
         public async UniTask RollUpCrepe()
         {
             _animator.SetBool("Spread", false);
+            IsReadyToCombine = false;
         }
     }
 }
