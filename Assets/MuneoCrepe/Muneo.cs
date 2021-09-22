@@ -10,6 +10,9 @@ namespace MuneoCrepe
     {
         #region Inspectors
 
+        [SerializeField] private CombinedCrepeController combineCrepe;
+        
+        [Space]
         [SerializeField] private Image baseBodyImage;
         [SerializeField] private Image baseBodyPattern;
         [SerializeField] private Image reverseBodyImage;
@@ -28,8 +31,9 @@ namespace MuneoCrepe
         private Dictionary<MuneoType, int> _characteristics;
         private Animator _animator;
         private bool _isMuneoDisappeared;
+        private bool _readyToGetCrepe;
 
-        public Animator Animator
+        private Animator Animator
         {
             get
             {
@@ -42,8 +46,12 @@ namespace MuneoCrepe
             }
         }
 
-        public void Initialize((int color, int hat, int dyeing, int eye) characteristics)
+        public bool Ready { get; private set; }
+
+        public void Initialize()
         {
+            (int color, int hat, int dyeing, int eye) characteristics  = UIManager.Instance.GenerateCharacteristics();
+            
             _characteristics = new Dictionary<MuneoType, int>
             {
                 {MuneoType.Color, characteristics.color},
@@ -54,10 +62,15 @@ namespace MuneoCrepe
 
             ShowAsUI();
             _isMuneoDisappeared = false;
+            _readyToGetCrepe = false;
+            Ready = true;
+            
+            combineCrepe.gameObject.SetActive(false);
         }
 
-        public async UniTask<bool> Reaction(Dictionary<IngredientType, int> ingredients)
+        public async UniTask Reaction(Dictionary<IngredientType, int> ingredients)
         {
+            Ready = false;
             var result = IsFavoriteCrepe(ingredients);
             
             // 성공 : Flip 애니메이션 재생 후 Move Up 애니메이션 재생
@@ -65,9 +78,13 @@ namespace MuneoCrepe
             Animator.SetBool("Success", result);
             Animator.SetTrigger("GetCrepe");
 
-            await UniTask.WaitUntil(() => _isMuneoDisappeared);
+            await UniTask.WaitUntil(() => _readyToGetCrepe);
 
-            return result;
+            combineCrepe.SetCrepe(ingredients);
+
+            await UniTask.WaitUntil(() => _isMuneoDisappeared);
+            
+            Initialize();
         }
 
         private bool IsFavoriteCrepe(Dictionary<IngredientType, int> ingredients)
@@ -84,6 +101,11 @@ namespace MuneoCrepe
         {
             baseBodyImage.color = reverseColorList[_characteristics[MuneoType.Color] - 1];
             reverseBodyImage.color = baseColorList[_characteristics[MuneoType.Color] - 1];
+        }
+
+        public void ReadyToGetCrepe()
+        {
+            _readyToGetCrepe = true;
         }
 
         public void DisappearFinished()

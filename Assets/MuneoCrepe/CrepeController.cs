@@ -13,7 +13,6 @@ namespace MuneoCrepe
         #region Inspectors
 
         [SerializeField] private TableController table;
-        [SerializeField] private CombinedCrepeController combinedCrepe;
         public Muneo nowMuneo;
 
         #endregion
@@ -32,20 +31,12 @@ namespace MuneoCrepe
         {
             _nowCount = 0;
 
-            GenerateRandomMuneo();
+            nowMuneo.Initialize();
             table.InitialSetting();
             
             // 3초 세고
             // 게임 시작
             Loop().Forget();
-        }
-        
-        private void GenerateRandomMuneo()
-        {
-            var characteristics = UIManager.Instance.GenerateCharacteristics();
-            nowMuneo.Initialize(characteristics);
-            // nowMuneo.Animator.SetTrigger("Next");
-            // combinedCrepe.gameObject.SetActive(false);
         }
 
         private async UniTask Loop()
@@ -56,22 +47,30 @@ namespace MuneoCrepe
 
                 CanControl = true;
 
-                var task = UniTask.Delay(1000, cancellationToken: TaskUtil.RefreshToken(ref _tokenSource));
+                var task = UniTask.Delay(Mathf.RoundToInt(ConfigGame.InputDuration * 1000f),
+                    cancellationToken: TaskUtil.RefreshToken(ref _tokenSource));
 
                 while (task.Status != UniTaskStatus.Succeeded && task.Status != UniTaskStatus.Canceled)
                 {
                     await UniTask.WaitForEndOfFrame();
                 }
 
-                CanControl = false;
-
-                table.CreateNewCrepe();
+                if (task.Status == UniTaskStatus.Succeeded)
+                {
+                    CanControl = false;
+                }
+                else if (task.Status == UniTaskStatus.Canceled)
+                {
+                    await UniTask.WaitUntil(() => nowMuneo.Ready);
+                }
             }
         }
 
-        public void GiveToMuneo()
+        public async UniTask GiveToMuneo()
         {
             _tokenSource.Cancel();
+            
+            await nowMuneo.Reaction(table.NowIngredients);
         }
 
         public void ThrowAway()

@@ -14,7 +14,6 @@ namespace MuneoCrepe
 
         private int _currentBoard;
 
-        private float duration = 1f;
         private const int BOARD_WIDTH = 900;
         private const int BELT_WIDTH = 1080;
 
@@ -57,6 +56,8 @@ namespace MuneoCrepe
                 return belts[nextIndex];
             }
         }
+
+        public Dictionary<IngredientType, int> NowIngredients => CurrentBoard.Ingredients;
         
         private void Start()
         {
@@ -79,12 +80,12 @@ namespace MuneoCrepe
         {
             var seq1 = DOTween.Sequence();
 
-            seq1.Append(PrevBoard.RectTransform.DoAnchorLocalMoveXBy(BOARD_WIDTH / 2, duration / 2).SetEase(Ease.Linear))
-                .Join(CurrentBoard.RectTransform.DoAnchorLocalMoveXBy(BOARD_WIDTH / 2, duration / 2).SetEase(Ease.Linear))
-                .Join(NextBoard.RectTransform.DoAnchorLocalMoveXBy(BOARD_WIDTH / 2, duration / 2).SetEase(Ease.Linear))
-                .Join(PrevBelt.DoAnchorLocalMoveXBy(BELT_WIDTH / 2, duration / 2).SetEase(Ease.Linear))
-                .Join(CurrentBelt.DoAnchorLocalMoveXBy(BELT_WIDTH / 2, duration / 2).SetEase(Ease.Linear))
-                .Join(NextBelt.DoAnchorLocalMoveXBy(BELT_WIDTH / 2, duration / 2).SetEase(Ease.Linear));
+            seq1.Append(PrevBoard.RectTransform.DoAnchorLocalMoveXBy(BOARD_WIDTH / 2, ConfigGame.BeltCycleDuration / 2).SetEase(Ease.Linear))
+                .Join(CurrentBoard.RectTransform.DoAnchorLocalMoveXBy(BOARD_WIDTH / 2, ConfigGame.BeltCycleDuration / 2).SetEase(Ease.Linear))
+                .Join(NextBoard.RectTransform.DoAnchorLocalMoveXBy(BOARD_WIDTH / 2, ConfigGame.BeltCycleDuration / 2).SetEase(Ease.Linear))
+                .Join(PrevBelt.DoAnchorLocalMoveXBy(BELT_WIDTH / 2, ConfigGame.BeltCycleDuration / 2).SetEase(Ease.Linear))
+                .Join(CurrentBelt.DoAnchorLocalMoveXBy(BELT_WIDTH / 2, ConfigGame.BeltCycleDuration / 2).SetEase(Ease.Linear))
+                .Join(NextBelt.DoAnchorLocalMoveXBy(BELT_WIDTH / 2, ConfigGame.BeltCycleDuration / 2).SetEase(Ease.Linear));
 
             await seq1.WaitAsync();
 
@@ -95,14 +96,16 @@ namespace MuneoCrepe
             PrevBelt.anchoredPosition = nextBeltPos + new Vector2(BELT_WIDTH, 0);
             
             _currentBoard = (_currentBoard + 1) % boards.Count;
+            
+            CreateNewCrepe();
 
             var seq2 = DOTween.Sequence();
-            seq2.Append(PrevBoard.RectTransform.DoAnchorLocalMoveXBy(BOARD_WIDTH / 2, duration / 2).SetEase(Ease.Linear))
-                .Join(CurrentBoard.RectTransform.DoAnchorLocalMoveXBy(BOARD_WIDTH / 2, duration / 2).SetEase(Ease.Linear))
-                .Join(NextBoard.RectTransform.DoAnchorLocalMoveXBy(BOARD_WIDTH / 2, duration / 2).SetEase(Ease.Linear))
-                .Join(PrevBelt.DoAnchorLocalMoveXBy(BELT_WIDTH / 2, duration / 2).SetEase(Ease.Linear))
-                .Join(CurrentBelt.DoAnchorLocalMoveXBy(BELT_WIDTH / 2, duration / 2).SetEase(Ease.Linear))
-                .Join(NextBelt.DoAnchorLocalMoveXBy(BELT_WIDTH / 2, duration / 2).SetEase(Ease.Linear));
+            seq2.Append(PrevBoard.RectTransform.DoAnchorLocalMoveXBy(BOARD_WIDTH / 2, ConfigGame.BeltCycleDuration / 2).SetEase(Ease.Linear))
+                .Join(CurrentBoard.RectTransform.DoAnchorLocalMoveXBy(BOARD_WIDTH / 2, ConfigGame.BeltCycleDuration / 2).SetEase(Ease.Linear))
+                .Join(NextBoard.RectTransform.DoAnchorLocalMoveXBy(BOARD_WIDTH / 2, ConfigGame.BeltCycleDuration / 2).SetEase(Ease.Linear))
+                .Join(PrevBelt.DoAnchorLocalMoveXBy(BELT_WIDTH / 2, ConfigGame.BeltCycleDuration / 2).SetEase(Ease.Linear))
+                .Join(CurrentBelt.DoAnchorLocalMoveXBy(BELT_WIDTH / 2, ConfigGame.BeltCycleDuration / 2).SetEase(Ease.Linear))
+                .Join(NextBelt.DoAnchorLocalMoveXBy(BELT_WIDTH / 2, ConfigGame.BeltCycleDuration / 2).SetEase(Ease.Linear));
 
             await seq2.WaitAsync();
         }

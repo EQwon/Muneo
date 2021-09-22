@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace MuneoCrepe
@@ -40,7 +41,7 @@ namespace MuneoCrepe
                 if (touchDiff.y > 0 && Mathf.Abs(touchDiff.y) > Mathf.Abs(touchDiff.x))
                 {
                     Debug.Log("up");
-                    crepeController.GiveToMuneo();
+                    crepeController.GiveToMuneo().Forget();
                 }
                 else if (touchDiff.y < 0 && Mathf.Abs(touchDiff.y) > Mathf.Abs(touchDiff.x))
                 {
@@ -55,7 +56,7 @@ namespace MuneoCrepe
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
                 Debug.Log("up");
-                crepeController.GiveToMuneo();
+                crepeController.GiveToMuneo().Forget();
             }
             else if (Input.GetKeyDown(KeyCode.DownArrow))
             {

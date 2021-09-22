@@ -23,8 +23,7 @@ namespace MuneoCrepe
         [SerializeField] private List<Sprite> toppingSpriteList;
 
         #endregion
-        
-        private Dictionary<IngredientType, int> _ingredients;
+
         private Button _button;
         private Animator _animator;
         private RectTransform _rectTransform;
@@ -42,10 +41,11 @@ namespace MuneoCrepe
             }
         }
         public bool IsReadyToCombine { get; private set; }
+        public Dictionary<IngredientType, int> Ingredients { get; private set; }
 
         public void SetCrepeDough(int cone, int fruit, int syrup, int topping)
         {
-            _ingredients = new Dictionary<IngredientType, int>
+            Ingredients = new Dictionary<IngredientType, int>
             {
                 {IngredientType.Cone, cone},
                 {IngredientType.Fruit, fruit},
@@ -58,7 +58,7 @@ namespace MuneoCrepe
 
         public void SetCrepeDough((int cone, int fruit, int syrup, int topping) characteristics)
         {
-            _ingredients = new Dictionary<IngredientType, int>
+            Ingredients = new Dictionary<IngredientType, int>
             {
                 {IngredientType.Cone, characteristics.cone},
                 {IngredientType.Fruit, characteristics.fruit},
@@ -71,7 +71,7 @@ namespace MuneoCrepe
 
         private void ShowAsUI()
         {
-            if (_ingredients[IngredientType.Cone] == 0)
+            if (Ingredients[IngredientType.Cone] == 0)
             {
                 transform.GetChild(0).gameObject.SetActive(false);
 
@@ -83,13 +83,13 @@ namespace MuneoCrepe
             }
 
             // 콘 스프라이트 조절
-            coneImage.sprite = coneSpriteList[_ingredients[IngredientType.Cone] - 1];
+            coneImage.sprite = coneSpriteList[Ingredients[IngredientType.Cone] - 1];
 
             // 과일 스프라이트 조절
-            if (_ingredients[IngredientType.Fruit] != 0)
+            if (Ingredients[IngredientType.Fruit] != 0)
             {
                 fruitImage.enabled = true;
-                fruitImage.sprite = fruitSpriteList[_ingredients[IngredientType.Fruit] - 1];
+                fruitImage.sprite = fruitSpriteList[Ingredients[IngredientType.Fruit] - 1];
             }
             else
             {
@@ -97,10 +97,10 @@ namespace MuneoCrepe
             }
             
             // 시럽 스프라이트 조절
-            if (_ingredients[IngredientType.Syrup] != 0)
+            if (Ingredients[IngredientType.Syrup] != 0)
             {
                 syrupImage.enabled = true;
-                syrupImage.sprite = syrupSpriteList[_ingredients[IngredientType.Syrup] - 1];
+                syrupImage.sprite = syrupSpriteList[Ingredients[IngredientType.Syrup] - 1];
             }
             else
             {
@@ -108,10 +108,10 @@ namespace MuneoCrepe
             }
 
             // 토핑 스프라이트 조절
-            if (_ingredients[IngredientType.Topping] != 0)
+            if (Ingredients[IngredientType.Topping] != 0)
             {
                 toppingImage.enabled = true;
-                toppingImage.sprite = toppingSpriteList[_ingredients[IngredientType.Topping] - 1];
+                toppingImage.sprite = toppingSpriteList[Ingredients[IngredientType.Topping] - 1];
             }
             else
             {
