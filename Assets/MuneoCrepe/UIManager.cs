@@ -91,7 +91,7 @@ namespace MuneoCrepe
         public void StartNextDay()
         {
             IsGameStart = false;
-
+            
             if (_life <= 0)
             {
                 Ending(false);
@@ -105,6 +105,8 @@ namespace MuneoCrepe
                 Ending(true);
                 return;
             }
+
+            _correctAmount = 0;
 
             tvController.SetDay(_day);
             topBarController.SetLife(_life);

@@ -10,6 +10,6 @@ namespace MuneoCrepe
         public const float InputDuration = 1.4f;
 
         public static readonly List<int> TimeLimitList = new List<int> {30, 50, 80, 120};
-        public static readonly List<int> TargetAmountList = new List<int> {2, 1, 1, 1};
+        public static readonly List<int> TargetAmountList = new List<int> {6, 8, 10, 10};
     }
 }
