@@ -1,6 +1,10 @@
+using System;
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
+using MuneoCrepe.Extensions;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace MuneoCrepe
 {
@@ -8,15 +12,17 @@ namespace MuneoCrepe
     {
         #region Inspectors
 
-        [SerializeField] private List<IngredientGroup> ingredientGroups;
-        [SerializeField] private ChoppingBoard choppingBoard;
+        [SerializeField] private TableController table;
         [SerializeField] private CombinedCrepeController combinedCrepe;
         public Muneo nowMuneo;
 
         #endregion
 
+        private CancellationTokenSource _tokenSource;
         private int _nowCount;
-        
+
+        public bool CanControl { get; private set; }
+
         public void SetActive(bool value, bool auto = false)
         {
             
@@ -25,62 +31,52 @@ namespace MuneoCrepe
         public void GameStart(int day)
         {
             _nowCount = 0;
-            for (var i = 0; i < ingredientGroups.Count; i++)
-            {
-                ingredientGroups[i].Initialize(i < day);
-            }
-            choppingBoard.Initialize();
 
             GenerateRandomMuneo();
-        }
-
-        public void OnClickIngredient(IngredientType type, int index)
-        {
-            if (!choppingBoard.IsReadyToCombine) return;
+            table.InitialSetting();
             
-            choppingBoard.SetIngredients(type, index);
+            // 3초 세고
+            // 게임 시작
+            Loop().Forget();
         }
-
-        public async UniTask OnClickChoppingBoard(Dictionary<IngredientType, int> ingredients)
-        {
-            if (!choppingBoard.IsReadyToCombine) return;
-
-            _nowCount += 1;
-            
-            // 크레페가 말리는 연출
-            await choppingBoard.RollUpCrepe();
-            await combinedCrepe.GiveToMuneo(ingredients);
-            var result = await nowMuneo.Reaction(ingredients);
-
-            if (result == false)
-            {
-                var isFail = UIManager.Instance.WrongCrepe();
-                if (isFail) return;
-            }
-            
-            if (_nowCount >= UIManager.Instance.TodayGoal)
-            {
-                // await CloseShop();
-                UIManager.Instance.StartNextDay();
-                return;
-            }
-
-            // 도마 초기화
-            choppingBoard.Initialize();
-            // 문어 초기화
-            GenerateRandomMuneo();
-        }
-
+        
         private void GenerateRandomMuneo()
         {
-            var color = Random.Range(1, 4);
-            var hat = ingredientGroups[1].Unlock ? Random.Range(0, 4) : 0;
-            var dyeing = ingredientGroups[2].Unlock ? Random.Range(0, 4) : 0;
-            var eye = ingredientGroups[3].Unlock ? Random.Range(0, 4) : 0;
-            
-            nowMuneo.Initialize(color, hat, dyeing, eye);
-            nowMuneo.Animator.SetTrigger("Next");
-            combinedCrepe.gameObject.SetActive(false);
+            var characteristics = UIManager.Instance.GenerateCharacteristics();
+            nowMuneo.Initialize(characteristics);
+            // nowMuneo.Animator.SetTrigger("Next");
+            // combinedCrepe.gameObject.SetActive(false);
+        }
+
+        private async UniTask Loop()
+        {
+            while (true)
+            {
+                await table.MoveConveyorBelt();
+
+                CanControl = true;
+
+                var task = UniTask.Delay(1000, cancellationToken: TaskUtil.RefreshToken(ref _tokenSource));
+
+                while (task.Status != UniTaskStatus.Succeeded && task.Status != UniTaskStatus.Canceled)
+                {
+                    await UniTask.WaitForEndOfFrame();
+                }
+
+                CanControl = false;
+
+                table.CreateNewCrepe();
+            }
+        }
+
+        public void GiveToMuneo()
+        {
+            _tokenSource.Cancel();
+        }
+
+        public void ThrowAway()
+        {
+            _tokenSource.Cancel();
         }
     }
 }

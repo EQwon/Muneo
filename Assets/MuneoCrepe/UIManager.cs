@@ -25,6 +25,9 @@ namespace MuneoCrepe
 
         public CrepeController CrepeController => crepeController;
         public int TodayGoal => _goalCounts[_day];
+        public bool IsHatOpen => _day >= 2;
+        public bool IsDyeingOpen => _day >= 3;
+        public bool IsEyeOpen => _day >= 4;
 
         private const int MAXIMUM_DAY = 4;
         private const int MAXIMUM_LIFE = 5;
@@ -76,6 +79,16 @@ namespace MuneoCrepe
             }
 
             return false;
+        }
+
+        public (int t1, int t2, int t3, int t4) GenerateCharacteristics()
+        {
+            var color = Random.Range(1, 4);
+            var hat = IsHatOpen ? Random.Range(0, 4) : 0;
+            var dyeing = IsDyeingOpen ? Random.Range(0, 4) : 0;
+            var eye = IsEyeOpen ? Random.Range(0, 4) : 0;
+
+            return (color, hat, dyeing, eye);
         }
     }
 }

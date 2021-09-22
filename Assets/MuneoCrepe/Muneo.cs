@@ -42,14 +42,14 @@ namespace MuneoCrepe
             }
         }
 
-        public void Initialize(int colorIndex = 0, int hatIndex = 0, int dyeingIndex = 0, int eyeIndex = 0)
+        public void Initialize((int color, int hat, int dyeing, int eye) characteristics)
         {
             _characteristics = new Dictionary<MuneoType, int>
             {
-                {MuneoType.Color, colorIndex},
-                {MuneoType.Hat, hatIndex},
-                {MuneoType.Dyeing, dyeingIndex},
-                {MuneoType.Eye, eyeIndex},
+                {MuneoType.Color, characteristics.color},
+                {MuneoType.Hat, characteristics.hat},
+                {MuneoType.Dyeing, characteristics.dyeing},
+                {MuneoType.Eye, characteristics.eye},
             };
 
             ShowAsUI();
