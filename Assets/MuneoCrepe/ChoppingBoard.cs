@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,67 +27,64 @@ namespace MuneoCrepe
         private Dictionary<IngredientType, int> _ingredients;
         private Button _button;
         private Animator _animator;
+        private RectTransform _rectTransform;
 
+        public RectTransform RectTransform
+        {
+            get
+            {
+                if (_rectTransform == null)
+                {
+                    _rectTransform = GetComponent<RectTransform>();
+                }
+
+                return _rectTransform;
+            }
+        }
         public bool IsReadyToCombine { get; private set; }
 
-        public void Initialize()
+        public void SetCrepeDough(int cone, int fruit, int syrup, int topping)
         {
             _ingredients = new Dictionary<IngredientType, int>
             {
-                {IngredientType.Cone, 0},
-                {IngredientType.Fruit, 0},
-                {IngredientType.Syrup, 0},
-                {IngredientType.Topping, 0},
+                {IngredientType.Cone, cone},
+                {IngredientType.Fruit, fruit},
+                {IngredientType.Syrup, syrup},
+                {IngredientType.Topping, topping},
             };
 
-            if (_button == null)
-            {
-                _button = GetComponent<Button>();
-            }
-            _button.onClick.RemoveAllListeners();
-            _button.onClick.AddListener(() =>
-            {
-                UIManager.Instance.CrepeController.OnClickChoppingBoard(_ingredients).Forget();
-            });
-
-            if (_animator == null)
-            {
-                _animator = GetComponent<Animator>();
-            }
-
-            _animator.SetBool("Spread", true);
-            IsReadyToCombine = false;
-
             ShowAsUI();
         }
 
-        public void SetIngredients(IngredientType type, int index)
+        public void SetCrepeDough((int cone, int fruit, int syrup, int topping) characteristics)
         {
-            if (_ingredients[type] == index)
+            _ingredients = new Dictionary<IngredientType, int>
             {
-                Debug.Log($"이미 {type} 타입에 {index}번 재료가 선택되어있습니다.");
-                return;
-            }
+                {IngredientType.Cone, characteristics.cone},
+                {IngredientType.Fruit, characteristics.fruit},
+                {IngredientType.Syrup, characteristics.syrup},
+                {IngredientType.Topping, characteristics.topping},
+            };
 
-            Debug.Log($"{type} 타입의 {index}번 째 재료를 선택했습니다.");
-            _ingredients[type] = index;
-            
             ShowAsUI();
         }
-        
+
         private void ShowAsUI()
         {
-            // 콘 스프라이트 조절
-            if (_ingredients[IngredientType.Cone] != 0)
+            if (_ingredients[IngredientType.Cone] == 0)
             {
-                coneImage.enabled = true;
-                coneImage.sprite = coneSpriteList[_ingredients[IngredientType.Cone] - 1];
+                transform.GetChild(0).gameObject.SetActive(false);
+
+                return;
             }
             else
             {
-                coneImage.enabled = false;
+                transform.GetChild(0).gameObject.SetActive(true);
             }
-            
+
+            // 콘 스프라이트 조절
+            coneImage.sprite = coneSpriteList[_ingredients[IngredientType.Cone] - 1];
+
             // 과일 스프라이트 조절
             if (_ingredients[IngredientType.Fruit] != 0)
             {
@@ -119,18 +117,6 @@ namespace MuneoCrepe
             {
                 toppingImage.enabled = false;
             }
-        }
-
-        /// <summary> Animator에서 Event로 사용 </summary>
-        public void ReadyToCombine()
-        {
-            IsReadyToCombine = true;
-        }
-
-        public async UniTask RollUpCrepe()
-        {
-            _animator.SetBool("Spread", false);
-            IsReadyToCombine = false;
         }
     }
 }
