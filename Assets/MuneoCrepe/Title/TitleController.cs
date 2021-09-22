@@ -9,7 +9,6 @@ namespace MuneoCrepe.Title
     {
         #region Inspectors
 
-        [SerializeField] private Image titleImage;
         [SerializeField] private Button startButton;
 
         #endregion
@@ -22,17 +21,12 @@ namespace MuneoCrepe.Title
 
             if (value)
             {
-                startButton.onClick.AddListener(() => OnClickGameStart().Forget());
+                startButton.onClick.AddListener(() => OnClickGameStart());
             }
         }
 
-        private async UniTask OnClickGameStart()
+        private void OnClickGameStart()
         {
-            // 1. 게임 스타트 버튼을 없앤다.
-            startButton.gameObject.SetActive(false);
-            // 2. 문어가 갈 때까지 기다린다.
-            
-            // 3. 타이틀을 없애고 시작
             gameObject.SetActive(false);
             UIManager.Instance.StartNextDay();
         }

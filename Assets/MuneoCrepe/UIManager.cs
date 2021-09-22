@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using MuneoCrepe.Extensions;
 using MuneoCrepe.Title;
 using MuneoCrepe.TV;
 using UnityEngine;
@@ -24,15 +25,34 @@ namespace MuneoCrepe
         public static UIManager Instance => _instance;
 
         public CrepeController CrepeController => crepeController;
-        public int TodayGoal => _goalCounts[_day];
-        public bool IsHatOpen => _day >= 2;
-        public bool IsDyeingOpen => _day >= 3;
-        public bool IsEyeOpen => _day >= 4;
 
-        private const int MAXIMUM_DAY = 4;
-        private const int MAXIMUM_LIFE = 5;
-        private readonly List<int> _goalCounts = new List<int> {0, 5, 6, 6, 6};
+        public bool IsGameStart
+        {
+            get => _isGameStart;
+            set
+            {
+                _isGameStart = value;
+                if (value)
+                {
+                    _gameStartTime = Time.time;
+                    topBarController.SetLeftAmount(LeftAmount);
+                }
+                else
+                {
+                    _gameStartTime = 0f;
+                }
+            }
+        }
+        private int LeftAmount => ConfigGame.TargetAmountList[_day - 1] - _correctAmount;
+        public float LeftTime => ConfigGame.TimeLimitList[_day - 1] - (Time.time - _gameStartTime);
 
+        private bool IsHatOpen => _day >= 2;
+        private bool IsDyeingOpen => _day >= 3;
+        private bool IsEyeOpen => _day >= 4;
+        
+        private bool _isGameStart;
+        private float _gameStartTime;
+        private int _correctAmount;
         private int _life;
         private int _day;
 
@@ -47,24 +67,67 @@ namespace MuneoCrepe
             {
                 Destroy(gameObject);
             }
+
+            IsGameStart = false;
+
+            Initialize();
         }
 
-        private void Start()
+        public void Initialize()
         {
             titleController.SetActive(true);
             tvController.SetInactive(true).Forget();
-            crepeController.SetActive(true, true);
+            crepeController.SetActive(true);
 
             _day = 0;
-            _life = MAXIMUM_LIFE;
+            _life = ConfigGame.MaximumLife;
+        }
+
+        private void Update()
+        {
+            topBarController.SetTimer();
         }
 
         public void StartNextDay()
         {
+            IsGameStart = false;
+
+            if (_life <= 0)
+            {
+                Ending(false);
+                return;
+            }
+
             _day += 1;
+
+            if (_day >= 5)
+            {
+                Ending(true);
+                return;
+            }
+
             tvController.SetDay(_day);
-            topBarController.SetDay(_day);
             topBarController.SetLife(_life);
+        }
+
+        public void Ending(bool isGoodEnding)
+        {
+            IsGameStart = false;
+
+            tvController.SetEnding(isGoodEnding);
+        }
+
+        public bool CorrectCrepe()
+        {
+            _correctAmount += 1;
+            topBarController.SetLeftAmount(LeftAmount);
+
+            if (LeftAmount == 0)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public bool WrongCrepe()
@@ -74,19 +137,41 @@ namespace MuneoCrepe
 
             if (_life == 0)
             {
-                // Fail();
                 return true;
             }
 
             return false;
         }
 
-        public (int t1, int t2, int t3, int t4) GenerateCharacteristics()
+        public (int t1, int t2, int t3, int t4) GenerateWrongCharacteristics(int depth = 0)
+        {
+            while (true)
+            {
+                var color = Random.Range(1, 4);
+                var hat = IsHatOpen ? Random.Range(1, 4) : 0;
+                var dyeing = IsDyeingOpen ? Random.Range(1, 4) : 0;
+                var eye = IsEyeOpen ? Random.Range(1, 4) : 0;
+
+                var characteristics = (color, hat, dyeing, eye);
+
+                if (CrepeController.nowMuneo.Characteristics.ConvertToInts() == characteristics || CrepeController.TableController.NowIngredients.ConvertToInts() == characteristics)
+                {
+                    if (depth >= 100) return characteristics;
+                    depth += 1;
+                }
+                else
+                {
+                    return characteristics;
+                }
+            }
+        }
+        
+        public (int t1, int t2, int t3, int t4) GenerateRandomCharacteristics()
         {
             var color = Random.Range(1, 4);
-            var hat = IsHatOpen ? Random.Range(0, 4) : 0;
-            var dyeing = IsDyeingOpen ? Random.Range(0, 4) : 0;
-            var eye = IsEyeOpen ? Random.Range(0, 4) : 0;
+            var hat = IsHatOpen ? Random.Range(1, 4) : 0;
+            var dyeing = IsDyeingOpen ? Random.Range(1, 4) : 0;
+            var eye = IsEyeOpen ? Random.Range(1, 4) : 0;
 
             return (color, hat, dyeing, eye);
         }

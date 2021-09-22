@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using MuneoCrepe.Extensions;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace MuneoCrepe
 {
@@ -13,6 +14,7 @@ namespace MuneoCrepe
         [SerializeField] private List<ChoppingBoard> boards;
 
         private int _currentBoard;
+        private int _passedCount;
 
         private const int BOARD_WIDTH = 900;
         private const int BELT_WIDTH = 1080;
@@ -62,6 +64,7 @@ namespace MuneoCrepe
         private void Start()
         {
             _currentBoard = 1;
+            _passedCount = 0;
         }
 
         public void InitialSetting()
@@ -71,9 +74,22 @@ namespace MuneoCrepe
             CreateNewCrepe();
         }
 
-        public void CreateNewCrepe()
+        private void CreateNewCrepe()
         {
-            NextBoard.SetCrepeDough(UIManager.Instance.GenerateCharacteristics());
+            (int, int, int, int) characteristics;
+            var rand = Random.Range(0, 100) % ConfigGame.MaximumPassedCount;
+            if (rand == 0 || _passedCount == ConfigGame.MaximumPassedCount)
+            {
+                characteristics = UIManager.Instance.CrepeController.nowMuneo.Characteristics.ConvertToInts();
+                _passedCount = 0;
+            }
+            else
+            {
+                characteristics = UIManager.Instance.GenerateWrongCharacteristics();
+                _passedCount += 1;
+            }
+
+            NextBoard.SetCrepeDough(characteristics);
         }
 
         public async UniTask MoveConveyorBelt()

@@ -21,13 +21,19 @@ namespace MuneoCrepe
         private int _nowCount;
 
         public bool CanControl { get; private set; }
+        public TableController TableController => table;
 
-        public void SetActive(bool value, bool auto = false)
+        public void SetActive(bool auto = false)
         {
-            
+            nowMuneo.Initialize();
+            table.InitialSetting();
+            if (auto)
+            {
+                Loop(true).Forget();
+            }
         }
         
-        public void GameStart(int day)
+        public void GameStart()
         {
             _nowCount = 0;
 
@@ -39,8 +45,10 @@ namespace MuneoCrepe
             Loop().Forget();
         }
 
-        private async UniTask Loop()
+        private async UniTask Loop(bool auto = false)
         {
+            if (!auto) UIManager.Instance.IsGameStart = true;
+
             while (true)
             {
                 await table.MoveConveyorBelt();
@@ -63,19 +71,26 @@ namespace MuneoCrepe
                 {
                     await UniTask.WaitUntil(() => nowMuneo.Ready);
                 }
+
+                if (UIManager.Instance.IsGameStart == false)
+                {
+                    break;
+                }
             }
         }
 
         public async UniTask GiveToMuneo()
         {
             _tokenSource.Cancel();
-            
+            CanControl = false;
+
             await nowMuneo.Reaction(table.NowIngredients);
         }
 
         public void ThrowAway()
         {
             _tokenSource.Cancel();
+            CanControl = false;
         }
     }
 }

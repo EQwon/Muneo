@@ -27,8 +27,7 @@ namespace MuneoCrepe
         [SerializeField] private List<GameObject> eyeObjectList;
 
         #endregion
-        
-        private Dictionary<MuneoType, int> _characteristics;
+
         private Animator _animator;
         private bool _isMuneoDisappeared;
         private bool _readyToGetCrepe;
@@ -47,12 +46,13 @@ namespace MuneoCrepe
         }
 
         public bool Ready { get; private set; }
+        public Dictionary<MuneoType, int> Characteristics { get; private set; }
 
         public void Initialize()
         {
-            (int color, int hat, int dyeing, int eye) characteristics  = UIManager.Instance.GenerateCharacteristics();
+            (int color, int hat, int dyeing, int eye) characteristics  = UIManager.Instance.GenerateRandomCharacteristics();
             
-            _characteristics = new Dictionary<MuneoType, int>
+            Characteristics = new Dictionary<MuneoType, int>
             {
                 {MuneoType.Color, characteristics.color},
                 {MuneoType.Hat, characteristics.hat},
@@ -72,7 +72,10 @@ namespace MuneoCrepe
         {
             Ready = false;
             var result = IsFavoriteCrepe(ingredients);
-            
+            var dayEnd = false;
+
+            dayEnd = result ? UIManager.Instance.CorrectCrepe() : UIManager.Instance.WrongCrepe();
+
             // 성공 : Flip 애니메이션 재생 후 Move Up 애니메이션 재생
             // 실패 : Move Down 애니메이션 재생
             Animator.SetBool("Success", result);
@@ -83,24 +86,25 @@ namespace MuneoCrepe
             combineCrepe.SetCrepe(ingredients);
 
             await UniTask.WaitUntil(() => _isMuneoDisappeared);
-            
+
+            if (dayEnd) UIManager.Instance.StartNextDay();
             Initialize();
         }
 
-        private bool IsFavoriteCrepe(Dictionary<IngredientType, int> ingredients)
+        public bool IsFavoriteCrepe(Dictionary<IngredientType, int> ingredients)
         {
-            if (_characteristics[MuneoType.Color] != ingredients[IngredientType.Cone]) return false;
-            if (_characteristics[MuneoType.Hat] != ingredients[IngredientType.Fruit]) return false;
-            if (_characteristics[MuneoType.Dyeing] != ingredients[IngredientType.Syrup]) return false;
-            if (_characteristics[MuneoType.Eye] != ingredients[IngredientType.Topping]) return false;
+            if (Characteristics[MuneoType.Color] != ingredients[IngredientType.Cone]) return false;
+            if (Characteristics[MuneoType.Hat] != ingredients[IngredientType.Fruit]) return false;
+            if (Characteristics[MuneoType.Dyeing] != ingredients[IngredientType.Syrup]) return false;
+            if (Characteristics[MuneoType.Eye] != ingredients[IngredientType.Topping]) return false;
             
             return true;
         }
 
         public void FlipColor()
         {
-            baseBodyImage.color = reverseColorList[_characteristics[MuneoType.Color] - 1];
-            reverseBodyImage.color = baseColorList[_characteristics[MuneoType.Color] - 1];
+            baseBodyImage.color = reverseColorList[Characteristics[MuneoType.Color] - 1];
+            reverseBodyImage.color = baseColorList[Characteristics[MuneoType.Color] - 1];
         }
 
         public void ReadyToGetCrepe()
@@ -115,10 +119,10 @@ namespace MuneoCrepe
 
         private void ShowAsUI()
         {
-            if (_characteristics[MuneoType.Color] != 0)
+            if (Characteristics[MuneoType.Color] != 0)
             {
-                baseBodyImage.color = baseColorList[_characteristics[MuneoType.Color] - 1];
-                reverseBodyImage.color = reverseColorList[_characteristics[MuneoType.Color] - 1];
+                baseBodyImage.color = baseColorList[Characteristics[MuneoType.Color] - 1];
+                reverseBodyImage.color = reverseColorList[Characteristics[MuneoType.Color] - 1];
             }
             else
             {
@@ -126,20 +130,20 @@ namespace MuneoCrepe
             }
             
             hatObjectList.ForEach(go => go.SetActive(false));
-            if (_characteristics[MuneoType.Hat] != 0)
+            if (Characteristics[MuneoType.Hat] != 0)
             {
-                hatObjectList[_characteristics[MuneoType.Hat] - 1].SetActive(true);
+                hatObjectList[Characteristics[MuneoType.Hat] - 1].SetActive(true);
             }
             
-            if (_characteristics[MuneoType.Dyeing] != 0)
+            if (Characteristics[MuneoType.Dyeing] != 0)
             {
                 baseBodyPattern.enabled = true;
                 reverseBodyPattern.enabled = true;
 
-                baseBodyPattern.sprite = patternList[_characteristics[MuneoType.Dyeing] - 1];
-                baseBodyPattern.color = patternColor[_characteristics[MuneoType.Dyeing] - 1];
-                reverseBodyPattern.sprite = patternList[_characteristics[MuneoType.Dyeing] - 1];
-                reverseBodyPattern.color = patternColor[_characteristics[MuneoType.Dyeing] - 1];
+                baseBodyPattern.sprite = patternList[Characteristics[MuneoType.Dyeing] - 1];
+                baseBodyPattern.color = patternColor[Characteristics[MuneoType.Dyeing] - 1];
+                reverseBodyPattern.sprite = patternList[Characteristics[MuneoType.Dyeing] - 1];
+                reverseBodyPattern.color = patternColor[Characteristics[MuneoType.Dyeing] - 1];
             }
             else
             {
@@ -148,7 +152,7 @@ namespace MuneoCrepe
             }
             
             eyeObjectList.ForEach(go => go.SetActive(false));
-            eyeObjectList[_characteristics[MuneoType.Eye]].SetActive(true);
+            eyeObjectList[Characteristics[MuneoType.Eye]].SetActive(true);
         }
     }
 }

@@ -20,8 +20,8 @@ namespace MuneoCrepe.TV
 
         private List<Sprite> _tvImageList;
         private List<string> _subtitleList;
-        private int _nowDay;
         private int _nowPage;
+        private bool _isEnding;
         
         public async UniTask SetInactive(bool instant = false)
         {
@@ -38,13 +38,25 @@ namespace MuneoCrepe.TV
 
         public void SetDay(int day)
         {
+            _isEnding = false;
             gameObject.SetActive(true);
             
             backgroundButton.onClick.RemoveAllListeners();
             backgroundButton.onClick.AddListener(NextPage);
 
-            _nowDay = day;
             SetResources(day);
+            ShowPage(0).Forget();
+        }
+
+        public void SetEnding(bool isGoodEnding)
+        {
+            _isEnding = true;
+            gameObject.SetActive(true);
+            
+            backgroundButton.onClick.RemoveAllListeners();
+            backgroundButton.onClick.AddListener(NextPage);
+
+            SetResources(isGoodEnding);
             ShowPage(0).Forget();
         }
 
@@ -57,9 +69,17 @@ namespace MuneoCrepe.TV
         {
             if (page == _tvImageList.Count)
             {
-                // 끝내고 게임으로 넘어가기!
                 await SetInactive();
-                UIManager.Instance.CrepeController.GameStart(_nowDay);
+
+                if (_isEnding)
+                {
+                    UIManager.Instance.Initialize();
+                }
+                else
+                {
+                    UIManager.Instance.CrepeController.GameStart();
+                }
+
                 return;
             }
 
@@ -70,15 +90,27 @@ namespace MuneoCrepe.TV
 
         private void SetResources(int day)
         {
-            var count = TVImageCount[day - 1];
-
+            _subtitleList = TextParser.Text2List(Resources.Load<TextAsset>($"TV/Day{day}_Text"));
+            
             _tvImageList = new List<Sprite>();
-            for (var i = 0; i < count; i++)
+            for (var i = 0; i < _subtitleList.Count; i++)
             {
                 _tvImageList.Add(Resources.Load<Sprite>($"TV/Day{day}_Image_{i + 1}"));
             }
 
-            _subtitleList = TextParser.Text2List(Resources.Load<TextAsset>($"TV/Day{day}_Text"));
+        }
+
+        private void SetResources(bool isGoodEnding)
+        {
+            var str = isGoodEnding ? "GoodEnding" : "BadEnding";
+            _subtitleList = TextParser.Text2List(Resources.Load<TextAsset>($"TV/{str}_Text"));
+
+            _tvImageList = new List<Sprite>();
+            for (var i = 0; i < _subtitleList.Count; i++)
+            {
+                _tvImageList.Add(Resources.Load<Sprite>($"TV/{str}_Image_{i + 1}"));
+            }
+
         }
     }
 }

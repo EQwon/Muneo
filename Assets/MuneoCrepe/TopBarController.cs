@@ -6,12 +6,13 @@ namespace MuneoCrepe
 {
     public class TopBarController : MonoBehaviour
     {
-        [SerializeField] private Text dayText;
+        [SerializeField] private Text leftAmountText;
+        [SerializeField] private Text leftTimeText;
         [SerializeField] private List<GameObject> heartList;
 
-        public void SetDay(int day)
+        public void SetLeftAmount(int amount)
         {
-            dayText.text = $"DAY {day:D2}";
+            leftAmountText.text = $"{amount:D2}";
         }
 
         public void SetLife(int count)
@@ -25,6 +26,31 @@ namespace MuneoCrepe
             for (var i = 0; i < heartList.Count; i++)
             {
                 heartList[i].SetActive(i < count);
+            }
+        }
+
+        public void SetTimer()
+        {
+            if (!UIManager.Instance.IsGameStart)
+            {
+                leftAmountText.text = "";
+                return;
+            }
+
+            var leftTime = UIManager.Instance.LeftTime;
+
+            if (leftTime >= 10)
+            {
+                leftTimeText.text = leftTime.ToString("00");
+            }
+            else if(leftTime >= 0)
+            {
+                leftTimeText.text = leftTime.ToString("0.0");
+            }
+            else
+            {
+                leftTimeText.text = "0.0";
+                UIManager.Instance.Ending(false);
             }
         }
     }
