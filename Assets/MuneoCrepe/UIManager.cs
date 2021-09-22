@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using MuneoCrepe.Extensions;
+using MuneoCrepe.Sound;
 using MuneoCrepe.Title;
 using MuneoCrepe.TV;
 using UnityEngine;
@@ -75,6 +76,8 @@ namespace MuneoCrepe
 
         public void Initialize()
         {
+            SoundManager.Instance.PlayBGM();
+            
             titleController.SetActive(true);
             tvController.SetInactive(true).Forget();
             crepeController.SetActive(true);
@@ -123,26 +126,18 @@ namespace MuneoCrepe
         {
             _correctAmount += 1;
             topBarController.SetLeftAmount(LeftAmount);
+            SoundManager.Instance.PlaySE(true);
 
-            if (LeftAmount == 0)
-            {
-                return true;
-            }
-
-            return false;
+            return LeftAmount == 0;
         }
 
         public bool WrongCrepe()
         {
             _life -= 1;
             topBarController.SetLife(_life);
+            SoundManager.Instance.PlaySE(false);
 
-            if (_life == 0)
-            {
-                return true;
-            }
-
-            return false;
+            return _life == 0;
         }
 
         public (int t1, int t2, int t3, int t4) GenerateWrongCharacteristics(int depth = 0)
