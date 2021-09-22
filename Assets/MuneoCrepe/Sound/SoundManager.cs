@@ -34,6 +34,7 @@ namespace MuneoCrepe.Sound
         {
             _bgmSource = gameObject.AddComponent<AudioSource>();
             _bgmSource.loop = true;
+            _bgmSource.volume = 0.6f;
             
             _seSource = gameObject.AddComponent<AudioSource>();
             _seSource.loop = false;
