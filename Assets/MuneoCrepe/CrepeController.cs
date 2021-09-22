@@ -11,7 +11,7 @@ namespace MuneoCrepe
         [SerializeField] private List<IngredientGroup> ingredientGroups;
         [SerializeField] private ChoppingBoard choppingBoard;
         [SerializeField] private CombinedCrepeController combinedCrepe;
-        [SerializeField] private Muneo nowMuneo;
+        public Muneo nowMuneo;
 
         #endregion
 
@@ -30,7 +30,7 @@ namespace MuneoCrepe
                 ingredientGroups[i].Initialize(i < day);
             }
             choppingBoard.Initialize();
-            combinedCrepe.gameObject.SetActive(false);
+
             GenerateRandomMuneo();
         }
 
@@ -74,10 +74,13 @@ namespace MuneoCrepe
         private void GenerateRandomMuneo()
         {
             var color = Random.Range(1, 4);
-            var hat = ingredientGroups[1].Unlock ? Random.Range(1, 4) : 0;
-            var dyeing = ingredientGroups[2].Unlock ? Random.Range(1, 4) : 0;
-            var eye = ingredientGroups[3].Unlock ? Random.Range(1, 4) : 0;
+            var hat = ingredientGroups[1].Unlock ? Random.Range(0, 4) : 0;
+            var dyeing = ingredientGroups[2].Unlock ? Random.Range(0, 4) : 0;
+            var eye = ingredientGroups[3].Unlock ? Random.Range(0, 4) : 0;
+            
             nowMuneo.Initialize(color, hat, dyeing, eye);
+            nowMuneo.Animator.SetTrigger("Next");
+            combinedCrepe.gameObject.SetActive(false);
         }
     }
 }

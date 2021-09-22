@@ -92,7 +92,7 @@ AnimationClip:
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 1.1666666
-        value: -600
+        value: -550
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -182,7 +182,7 @@ AnimationClip:
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 1.1666666
-        value: -600
+        value: -550
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -339,7 +339,14 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.8333333
-    functionName: MoveToBackLayer
+    functionName: MoveToMuneoLayer
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 1.05
+    functionName: MoveToVeryBackLayer
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

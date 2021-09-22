@@ -15,10 +15,12 @@ namespace MuneoCrepe
         [SerializeField] private List<GameObject> fruitObjects;
         [SerializeField] private Image syrupImage;
         [SerializeField] private List<GameObject> toppingObjects;
+        [SerializeField] private Image handleImage;
 
         [Header("Sprites")]
         [SerializeField] private List<Sprite> coneSpriteList;
         [SerializeField] private List<Sprite> syrupSpriteList;
+        [SerializeField] private List<Sprite> handleSpriteList;
 
         #endregion
 
@@ -43,12 +45,8 @@ namespace MuneoCrepe
             // 콘 스프라이트 조절
             if (ingredients[IngredientType.Cone] != 0)
             {
-                coneImage.enabled = true;
                 coneImage.sprite = coneSpriteList[ingredients[IngredientType.Cone] - 1];
-            }
-            else
-            {
-                coneImage.enabled = false;
+                handleImage.sprite = handleSpriteList[ingredients[IngredientType.Cone] - 1];
             }
             
             // 과일 스프라이트 조절
@@ -76,7 +74,9 @@ namespace MuneoCrepe
                 toppingObjects[ingredients[IngredientType.Topping] - 1].SetActive(true);
             }
             
+            transform.SetParent(UIManager.Instance.CrepeController.transform);
             transform.SetAsLastSibling();
+            
             RectTransform.localScale = Vector3.one;
             RectTransform.anchoredPosition = new Vector2(0, -660);
             _giveFinished = false;
@@ -90,10 +90,14 @@ namespace MuneoCrepe
             await UniTask.WaitUntil(() => _giveFinished);
         }
 
-        public void MoveToBackLayer()
+        public void MoveToMuneoLayer()
         {
-            var index = transform.GetSiblingIndex();
-            transform.SetSiblingIndex(index - 1);
+            transform.SetParent(UIManager.Instance.CrepeController.nowMuneo.transform);
+        }
+
+        public void MoveToVeryBackLayer()
+        {
+            transform.SetAsFirstSibling();
         }
 
         public void GiveFinish()

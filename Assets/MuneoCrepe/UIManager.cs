@@ -68,10 +68,10 @@ namespace MuneoCrepe
             if (_life == 0)
             {
                 // Fail();
-                return false;
+                return true;
             }
 
-            return true;
+            return false;
         }
     }
 }
