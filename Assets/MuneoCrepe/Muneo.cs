@@ -20,6 +20,7 @@ namespace MuneoCrepe
         [SerializeField] private List<Color> reverseColorList;
         [SerializeField] private List<GameObject> hatObjectList;
         [SerializeField] private List<Sprite> patternList;
+        [SerializeField] private List<Color> patternColor;
         [SerializeField] private List<GameObject> eyeObjectList;
 
         #endregion
@@ -114,7 +115,9 @@ namespace MuneoCrepe
                 reverseBodyPattern.enabled = true;
 
                 baseBodyPattern.sprite = patternList[_characteristics[MuneoType.Dyeing] - 1];
+                baseBodyPattern.color = patternColor[_characteristics[MuneoType.Dyeing] - 1];
                 reverseBodyPattern.sprite = patternList[_characteristics[MuneoType.Dyeing] - 1];
+                reverseBodyPattern.color = patternColor[_characteristics[MuneoType.Dyeing] - 1];
             }
             else
             {

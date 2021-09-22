@@ -2210,7 +2210,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.7607843, g: 0.35686275, b: 0.34901962, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4059,6 +4059,10 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 4067d2659d9469a418b4753f9c8ccbf0, type: 3}
   - {fileID: 21300000, guid: 6f4bd3035c5879d44901dcb3bf97c8a7, type: 3}
   - {fileID: 21300000, guid: 6d31dce069d79ca4b92c60089bc7c8e9, type: 3}
+  patternColor:
+  - {r: 0.3137255, g: 0.227451, b: 0.07450981, a: 1}
+  - {r: 0.7607844, g: 0.35686275, b: 0.34901962, a: 1}
+  - {r: 1, g: 0.909804, b: 0.7176471, a: 1}
   eyeObjectList:
   - {fileID: 616867212}
   - {fileID: 896179826}
@@ -7502,7 +7506,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.7607843, g: 0.35686275, b: 0.34901962, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
